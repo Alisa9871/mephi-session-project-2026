@@ -1,0 +1,84 @@
+    1  ip link show
+    2  nmcli con mod enp0s3 ipv4.addresses 192.168.1.100/24
+    3  nmcli con mod enp0s3 ipv4.gateway 192.168.1.1
+    4  nmcli con mod enp0s3 ipv4.dns 8.8.8.8
+    5  nmcli con mod enp0s3 ipv4.method manual
+    6  nmcli con up enp0s3
+    7  hostnamectl set-hostname mephi-2026.domain.local
+    8  ping -c 4 8.8.8.8 > /tmp/network_check.txt
+    9  ping -c 4 192.168.1.1 >> /tmp/network_check.txt
+   10  dnf install -y nginx tcpdump libcap-ng-utils
+   11  nmcli con mod enp0s3 ipv4.method auto
+   12  nmcli con up enp0s3
+   13  dnf install -y nginx tcpdump libcap-ng-utils
+   14  ping -c 8.8.8.8
+   15  ping -c 3 8.8.8.8
+   16   ping -c 3 google.com
+   17   nmcli con mod enp0s3 ipv4.method auto
+   18  nmcli con mod enp0s3 ipv4.addresses ""
+   19  nmcli con mod enp0s3 ipv4.gateway ""
+   20  nmcli con mod enp0s3 ipv4.addresses ""
+   21  nmcli con mod enp0s3 ipv4.dns ""
+   22  nmcli con up enp0s3
+   23   ping -c 3 8.8.8.8
+   24  dnf install -y nginx tcpdump libcap-ng-utils
+   25  cd /tmp
+   26  dnf download tcpdump
+   27  rpm -ivh --replacepkgs tcpdump-4.99.5-1.red80.x86_64.rpm
+   28  lsblk
+   29  fdisk /dev/sdb
+   30  lsblk
+   31   fdisk /dev/sdb
+   32  mkfs.ext4 -L MEPHI_DATA /dev/sdb1
+   33  mkdir -p /data/mephi-web
+   34  echo 'LABEL=MEPHI_DATA /data/mephi-web ext4 defaults 0 2' >> /etc/fstab
+   35  moubt -a
+   36  mount -a
+   37  systemctl daemon-reload
+   38  mount -a
+   39  df -h /data/mephi-web
+   40  systemctl start nginx
+   41  systemctl enable nginx
+   42   journalctl -u nginx --since "5 minutes ago" > /tap/nginx_recent_logs.txt
+   43  useradd mephi-admin
+   44  groupadd mephi-devs
+   45  usermod -aG mephi-devs mephi-admin
+   46  echo "mephi-admin:P@ssw0rd2026" | chpasswd
+   47  chown mephi-admin:mephi-devs /data/mephi-web
+   48  chmod 2775 /data/mephi-web
+   49  getenforce
+   50  semanage fcontext -a -t httpd_sys_content_t "/data/mephi-web(/.*)?"
+   51  dnf install -y policycoreutils-python-utils
+   52  semanage fcontext -a -t httpd_sys_content_t "/data/mephi-web(/.*)?"
+   53  restorecon -Rv /data/mephi-web
+   54  setcap cap_net_raw,cap_net_admin=eip /usr/sbin/tcpdump
+   55  getcap /usr/sbin/tcpdump
+   56  sed -i 's/^#*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
+   57  systemctl restart sshd
+   58  echo "-:root:ALL" >> /etc/security/access.conf
+   59  echo "account required pam_access.so >> /etc/pam.d/login
+   60  echo "account required pam_access.so" >> /etc/pam.d/login
+   61  cat > /etc/nginx/conf.d/mephi.conf << 'EOF
+server {
+listen 80;
+serner_name_;
+   62  cat > /etc/nginx/conf.d/mephi.conf << 'EOF
+server {
+listen 80;
+server_name_;
+   63  cat > /etc/nginx/conf.d/mephi.conf << 'EOF
+server {
+listen 80;
+server_name _;
+root /data/mephi-web;
+index index.html;
+}
+EOF
+
+EOF
+   64  echo -e "server {\n listen 80;\n server_name _;\n root /data/mephi-web;\n index index.html;\n}" > /etc/nginx/conf.d/mephi.conf
+   65  nginx -t
+   66  systemctl restart nginx
+   67  su - mephi-admin -c 'echo "Hello from Student: 370849" > /data/mephi-web/index.html'
+   68  curl http://localhost
+   69  history > ~/project_history.txt
